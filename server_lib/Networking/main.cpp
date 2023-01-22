@@ -28,7 +28,7 @@ int main()
 		read_return = read(connection_fd, buffer, MAXLINE - 1);
 		while (read_return > 0)
 		{
-			std::cout << "buffer: " << buffer << std::endl;
+			std::cout << "buffer:\n" << buffer << std::endl;
 			if (buffer[read_return -1 ] == '\n') 
 			{
 				break;

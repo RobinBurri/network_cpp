@@ -42,8 +42,3 @@ int Socket::get_sock_id() const
 {
 	return _sock_id;
 }
-
-// int Socket::get_connection() const
-// {
-// 	return _connection;
-// }
