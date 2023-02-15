@@ -13,12 +13,12 @@ int main()
 	int connection_fd;
 	char buffer[MAXLINE] = {0};
 	int read_return;
-
+	std::string ok_resp = "HTTP/1.1 200 OK";
 
 	while (1)
 	{
 		std::cout << "++++++ Waiting for new connection ++++++" << std::endl;
-		connection_fd = accept(sock.get_sock_id(), (struct sockaddr *)NULL,NULL);
+		connection_fd = accept(sock.get_sock_id(), (struct sockaddr *)NULL, NULL);
 		if (connection_fd < 0)
 		{
 			std::cout << "connection_fd: " << connection_fd << std::endl;
@@ -28,16 +28,19 @@ int main()
 		read_return = read(connection_fd, buffer, MAXLINE - 1);
 		while (read_return > 0)
 		{
-			std::cout << "buffer:\n" << buffer << std::endl;
-			if (buffer[read_return -1 ] == '\n') 
+			std::cout << "HTTP request:\n"
+					  << buffer << std::endl;
+			if (buffer[read_return - 1] == '\n')
 			{
 				break;
 			}
 			read_return = read(connection_fd, buffer, MAXLINE - 1);
 		}
-		write(connection_fd, "hello\n", 6);
-		std::cout << "message send" << std::endl;
+		char arr[2000] = "HTTP/1.1 200 OK\nContent-Type:text/html\nContent-Length: 160\n\n<html><head><title>Webserver dummy html page</title></head><body><h1>Welcome to Webserver dummy html page !!!</h1></body></html>";
+						 int send_res = send(connection_fd, arr, sizeof(arr), 0);
+		std::cout << "response send" << std::endl;
 		close(connection_fd);
+		std::cout << "connection closed" << std::endl;
 	}
 
 	return 0;

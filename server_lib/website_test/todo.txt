@@ -1,5 +1,0 @@
-parsing server config file and create a server object with it.
-
-parsing incoming http requests, check if valid
-
-send relevant page based on the http requests.
