@@ -3,6 +3,9 @@
 #include <sys/socket.h>
 #include <netinet/in.h>
 #include <iostream>
+#include <errno.h>
+#include <stdio.h>
+#include <stdlib.h>
 
 class Socket
 {
