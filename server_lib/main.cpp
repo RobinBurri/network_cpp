@@ -4,16 +4,23 @@
 #include <sys/socket.h>
 #include <unistd.h>
 
-const int MAXLINE = 1024;
+const int MAXLINE = 2048;
 
 int main()
 {
-
+	/*
+	 *  sock @params:
+	 *	AF_INET for IPv4,
+	 *	Port number,
+	 *	SOCK_STREAM bidirectional byte-stream socket,
+	 *	AF_INET + SOCK_STREAM always protocol = 0,
+	 *	address for this socket, let the OS choose = INADDR_ANY
+	 */
 	Socket sock(AF_INET, 8080, SOCK_STREAM, 0, INADDR_ANY);
 	int connection_fd;
 	char buffer[MAXLINE] = {0};
 	int read_return;
-	std::string ok_resp = "HTTP/1.1 200 OK";
+	char uniq_response[2000] = "HTTP/1.1 200 OK\nContent-Type:text/html\nContent-Length: 160\n\n<html><head><title>Webserver dummy html page</title></head><body><h1>Welcome to Webserver dummy html page !!!</h1></body></html>";
 
 	while (1)
 	{
@@ -36,8 +43,8 @@ int main()
 			}
 			read_return = read(connection_fd, buffer, MAXLINE - 1);
 		}
-		char arr[2000] = "HTTP/1.1 200 OK\nContent-Type:text/html\nContent-Length: 160\n\n<html><head><title>Webserver dummy html page</title></head><body><h1>Welcome to Webserver dummy html page !!!</h1></body></html>";
-						 int send_res = send(connection_fd, arr, sizeof(arr), 0);
+
+		int send_res = send(connection_fd, uniq_response, sizeof(uniq_response), 0);
 		std::cout << "response send" << std::endl;
 		close(connection_fd);
 		std::cout << "connection closed" << std::endl;
