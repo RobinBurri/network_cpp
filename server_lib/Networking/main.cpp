@@ -35,7 +35,7 @@ int main()
 			}
 			read_return = read(connection_fd, buffer, MAXLINE - 1);
 		}
-		write(connection_fd, "hello", 6);
+		write(connection_fd, "hello\n", 6);
 		std::cout << "message send" << std::endl;
 		close(connection_fd);
 	}
