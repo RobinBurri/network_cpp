@@ -20,7 +20,7 @@ int main()
 	int connection_fd;
 	char buffer[MAXLINE] = {0};
 	int read_return;
-	char uniq_response[2000] = "HTTP/1.1 200 OK\nContent-Type:text/html\nContent-Length: 160\n\n<html><head><title>Webserver dummy html page</title></head><body><h1>Welcome to Webserver dummy html page !!!</h1></body></html>";
+	char uniq_response[2000] = "HTTP/1.1 200 OK\nContent-Type:text/html\nContent-Length: 160\n\n<html><head><title>Webserver dummy html page</title></head><body><h1>Welcome to Webserver dummy web page !!!</h1></body></html>";
 
 	while (1)
 	{

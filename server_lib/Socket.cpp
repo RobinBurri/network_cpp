@@ -20,6 +20,8 @@ void Socket::createSocket(int domain, int type, int protocol)
 }
 void Socket::establishConnection()
 {
+	// a pointer to a struct sockaddr_in can be cast to a pointer to a struct sockaddr and vice-versa.
+	// So even though connect() wants a struct sockaddr*, you can still use a struct sockaddr_in and cast it at the last minute!
 	_connection = bind(_sock_id, (struct sockaddr *)&_address, sizeof(_address));
 	test_socket(_connection);
 }
