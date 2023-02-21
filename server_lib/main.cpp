@@ -4,7 +4,7 @@
 #include <sys/socket.h>
 #include <unistd.h>
 
-const int MAXLINE = 2048;
+const int MAXLINE = 10240;
 
 int main()
 {
