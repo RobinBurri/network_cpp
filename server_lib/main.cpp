@@ -5,6 +5,7 @@
 #include <unistd.h>
 #include <vector>
 #include <string>
+#include "HttpParser.hpp"
 
 const int MAXLINE = 10240;
 
@@ -22,6 +23,7 @@ int main()
 	int connection_fd;
 	char buffer[MAXLINE] = {0};
 	int read_return;
+	HttpParser req_parser;
 	std::vector<std::string> header;
 	char uniq_response[2000] = "HTTP/1.1 200 OK\nContent-Type:text/html\nContent-Length: 160\n\n<html><head><title>Webserver dummy html page</title></head><body><h1>Welcome to Webserver dummy web page !!!</h1></body></html>";
 
@@ -38,36 +40,25 @@ int main()
 		read_return = read(connection_fd, buffer, MAXLINE - 1);
 		while (read_return > 0)
 		{
-			size_t pos = 0;
-			std::string token;
-			std::string delimiter = "\n";
-			std::string string_buff = buffer;
-			std::cout << "string_buff: " << string_buff << std::endl;
 
-			while ((pos = string_buff.find(delimiter)) != std::string::npos)
-			{
-				token = string_buff.substr(0, pos);
-				std::cout << "token : " << token << std::endl;
-				header.push_back(token);
-				string_buff.erase(0, pos + delimiter.length());
-			}
-
-			// std::cout << "HTTP request:\n"
-			// 		  << buffer << std::endl;
+				// std::cout << "HTTP request:\n"
+				// 		  << buffer << std::endl;
+			req_parser.parseBuffer(buffer);
 			if (buffer[read_return - 1] == '\n')
 			{
 				break;
 			}
 			read_return = read(connection_fd, buffer, MAXLINE - 1);
 		}
-		std::cout << "header.size(): " << header.size() << std::endl;
- 		for (unsigned int i= 0; i < header.size(); i++) {
-			std::cout << header[i] << std::endl;
-		}
+		// std::cout << "header.size(): " << header.size() << std::endl;
+ 		// for (unsigned int i= 0; i < header.size(); i++) {
+		// 	std::cout << header[i] << std::endl;
+		// }
+		req_parser.print_http_req();
 		send(connection_fd, uniq_response, sizeof(uniq_response), 0);
-		std::cout << "response send" << std::endl;
+		std::cout << "RESPONSE SEND" << std::endl;
 		close(connection_fd);
-		std::cout << "connection closed" << std::endl;
+		std::cout << "CONNECTION CLOSED" << std::endl;
 	}
 
 	return 0;
