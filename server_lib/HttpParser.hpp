@@ -11,13 +11,14 @@ class HttpParser
 {
 private:
 	std::unordered_map<std::string, std::string> _http_req;
+	void parseFirstLine(std::string firstLine);
+	void parseOtherLines(std::vector<std::string> tmpVector);
 
 public:
 	HttpParser();
 	~HttpParser();
+	
 	void parseBuffer(char *buff);
-	void parseFirstLine(std::string firstLine);
-	void parseOtherLines(std::vector<std::string> tmpVector);
 	std::string trim(const std::string &s);
 	void print_http_req();
 };

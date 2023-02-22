@@ -50,10 +50,10 @@ int main()
 			}
 			read_return = read(connection_fd, buffer, MAXLINE - 1);
 		}
-		// std::cout << "header.size(): " << header.size() << std::endl;
- 		// for (unsigned int i= 0; i < header.size(); i++) {
-		// 	std::cout << header[i] << std::endl;
-		// }
+		std::cout << "header.size(): " << header.size() << std::endl;
+ 		for (unsigned int i= 0; i < header.size(); i++) {
+			std::cout << header[i] << std::endl;
+		}
 		req_parser.print_http_req();
 		send(connection_fd, uniq_response, sizeof(uniq_response), 0);
 		std::cout << "RESPONSE SEND" << std::endl;
