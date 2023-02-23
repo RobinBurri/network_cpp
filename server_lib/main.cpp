@@ -5,7 +5,7 @@
 #include <unistd.h>
 #include <vector>
 #include <string>
-#include "HttpParser.hpp"
+#include "HttpRequest.hpp"
 
 const int MAXLINE = 10240;
 
@@ -23,7 +23,7 @@ int main()
 	int connection_fd;
 	char buffer[MAXLINE] = {0};
 	int read_return;
-	HttpParser req_parser;
+	HttpRequest requestHandler;
 	std::vector<std::string> header;
 	char uniq_response[2000] = "HTTP/1.1 200 OK\nContent-Type:text/html\nContent-Length: 160\n\n<html><head><title>Webserver dummy html page</title></head><body><h1>Welcome to Webserver dummy web page !!!</h1></body></html>";
 
@@ -43,22 +43,21 @@ int main()
 
 				// std::cout << "HTTP request:\n"
 				// 		  << buffer << std::endl;
-			req_parser.parseBuffer(buffer);
+			requestHandler.parseBuffer(buffer);
 			if (buffer[read_return - 1] == '\n')
 			{
 				break;
 			}
 			read_return = read(connection_fd, buffer, MAXLINE - 1);
 		}
-		std::cout << "header.size(): " << header.size() << std::endl;
- 		for (unsigned int i= 0; i < header.size(); i++) {
-			std::cout << header[i] << std::endl;
-		}
-		req_parser.print_http_req();
+
+		requestHandler.printHttpReq();
 		send(connection_fd, uniq_response, sizeof(uniq_response), 0);
 		std::cout << "RESPONSE SEND" << std::endl;
 		close(connection_fd);
 		std::cout << "CONNECTION CLOSED" << std::endl;
+		std::cout << requestHandler.getMethod() << " " << requestHandler.getPath() << " " << requestHandler.getProtocol() << "\n"<<requestHandler.methodIsAuthorized(requestHandler.getMethod())<< std::endl;
+		std::cout << "host: " << requestHandler.getHost() << std::endl;
 	}
 
 	return 0;
