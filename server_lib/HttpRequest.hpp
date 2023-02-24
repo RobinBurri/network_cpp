@@ -6,6 +6,7 @@
 #include <vector>
 #include <iostream>
 #include <map>
+#include <stdexcept>
 
 class HttpRequest
 {
@@ -27,6 +28,16 @@ public:
 	std::string getPath() const;
 	std::string getProtocol() const;
 	std::string getHost() const;
+
+	class FirstLineError : public std::exception {
+		public:
+		const char *what() const throw();
+	};
+	
+	class PostRequestNoBody : public std::exception {
+		public:
+		const char *what() const throw();
+	};
 };
 
 #endif

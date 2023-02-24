@@ -45,7 +45,7 @@ void HttpRequest::parseFirstLine(std::string firstLine)
 	tmpVector.push_back(this->trim(firstLine));
 
 	if (tmpVector.size() != 3)
-		return;
+		throw HttpRequest::FirstLineError();
 	_http_req["Method"] = tmpVector[0];
 	_http_req["Path"] = tmpVector[1];
 	_http_req["Protocol"] = tmpVector[2];
@@ -119,3 +119,21 @@ bool HttpRequest::methodIsAuthorized(std::string method) const
 {
 	return (method.compare("GET") || method.compare("POST") || method.compare("DELETE"));
 }
+
+
+// EXCEPTIONS
+const char *HttpRequest::FirstLineError::what() const throw()
+{
+	return "Request Line format error.";
+}
+const char *HttpRequest::PostRequestNoBody::what() const throw()
+{
+	return "Post Request Method but no body.";
+}
+
+/**
+ * TODO : - read n byte of the body
+ * TODO : - what happend if the body is not send in one request
+ * TODO : - Check method to see if request make sense
+ * TODO : - throw execeptions at every error
+*/
