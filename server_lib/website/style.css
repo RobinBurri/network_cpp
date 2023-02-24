@@ -1,20 +1,41 @@
+:root{
+	--main-color: #BDB76B;
+
+}
+
+
 * {
     margin: 0;
     padding: 0;
     box-sizing: border-box;
 }
 
+body {
+	min-height: 100vh;
+    min-width: 100vw;
+    background-color: var(--main-color);
+}
 a {
     text-decoration: none;
-    color: pink;
+    color: var(--main-color);
+}
+
+.btn {
+	padding: 0.5rem 1rem;
+}
+
+input {
+	padding: 0.5rem 1rem;
 }
 
 .wrapper {
     width: 100%;
+	height: 100%;
     padding: 2rem;
 }
 
 .nav {
+	
     display: flex;
     justify-content: space-between;
     align-items: center;
@@ -24,22 +45,38 @@ a {
 
 .logo {
     font-size: 2rem;
-    color: pink;
+    color: var(--main-color);
     padding: 2rem;
 }
 .navigation {
+	min-width: 25rem;
     display: flex;
-    justify-content: space-between;
+    justify-content: space-around;
     align-items: center;
     padding: 2rem;
 }
 
-.index-main {
-    height: 100vh;
-    width: 100vw;
-    background-color: pink;
+.centered-box {
+	height: 100%;
+	width: 100%;
+	display: flex;
+	justify-content: center;
+	align-items: center;
 }
 
 .title {
     font-size: 7rem;
+}
+
+form {
+	text-align: center;
+}
+
+.item-div {
+	text-align: center;
+	border: 1px solid black;
+	border-radius: 3px;
+	padding: 1rem 2rem;
+	margin-bottom: 1rem;
+	background-color: floralwhite;
 }
