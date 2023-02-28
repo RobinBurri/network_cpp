@@ -42,9 +42,24 @@ void HttpResponse::print_response_map(void)
 
 int HttpResponse::count_file_size(std::string path) {
 	std::ifstream stream;
-	int size;
+	int size = 0;
+	if (file_exists(path)) {
 	stream.open(path.c_str(), std::ios::binary);
 	stream.seekg(0, std::ios::end);
 	size = stream.tellg();
+	stream.close();
+	}
 	return size;
+}
+
+bool HttpResponse::file_exists(std::string path)
+{
+	std::ifstream file;
+	bool ret = false;
+	file.open(path);
+	if (file){
+		ret = true;
+		file.close();
+	}
+	return ret;
 }
