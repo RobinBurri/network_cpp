@@ -8,11 +8,11 @@
 class StatusCode
 {
 private:
-	std::map<int, std::string> _status_codes;
+	std::map<std::string, std::string> _status_codes;
 
 public:
 	StatusCode();
-	std::string &operator[](int status_code);
+	std::string &operator[](std::string status_code);
 };
 
 #endif

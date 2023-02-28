@@ -6,6 +6,7 @@
 #include <vector>
 #include <string>
 #include "HttpRequest.hpp"
+#include "HttpResponse.hpp"
 
 const int MAXLINE = 1000;
 
@@ -24,12 +25,15 @@ int main()
 	char buffer[MAXLINE] = {0};
 	int recv_return;
 	HttpRequest requestHandler;
+	HttpResponse response_handler;
 	std::vector<std::string> header;
 	char uniq_response[2000] = "HTTP/1.1 200 OK\nContent-Type:text/html\nContent-Length: 160\n\n<html><head><title>Webserver dummy html page</title></head><body><h1>Welcome to Webserver dummy web page !!!</h1></body></html>";
 
 	while (1)
 	{
 		std::cout << "++++++ Waiting for new connection ++++++" << std::endl;
+		response_handler.load_response_map();
+		response_handler.print_response_map();
 		connection_fd = accept(sock.get_sock_id(), (struct sockaddr *)NULL, NULL);
 		if (connection_fd < 0)
 		{
@@ -41,7 +45,7 @@ int main()
 		while (recv_return > 0)
 		{
 			requestHandler.parseBuffer(buffer);
-			if (buffer[recv_return - 1] == '\n' || recv_return < MAXLINE )
+			if (buffer[recv_return - 1] == '\n' || recv_return < MAXLINE)
 			{
 				break;
 			}
