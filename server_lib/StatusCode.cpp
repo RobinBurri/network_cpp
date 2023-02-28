@@ -1,4 +1,4 @@
-#include "StatusCode.hpp"
+#include "statusCode.hpp"
 
 /*
 	https://www.rfc-editor.org/rfc/rfc2616#section-9.3
@@ -55,4 +55,11 @@ StatusCode::StatusCode(){
 std::string &StatusCode::operator[](std::string status_code)
 {
 	return _status_codes[status_code];
+}
+
+std::string StatusCode::get_key_value_formated(int code) const
+{
+	std::string code_str;
+	code_str = std::to_string(code);
+	return code_str + " " + _status_codes.at(code_str);
 }

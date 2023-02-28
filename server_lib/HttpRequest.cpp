@@ -24,7 +24,7 @@ void HttpRequest::parseBuffer(char *buff)
 	}
 	if (str_buff.length() != 0)
 	{
-		request_map["Body"] = this->trim(str_buff);
+		_request_map["Body"] = this->trim(str_buff);
 	}
 	this->parseFirstLine(tmp_vector[0]);
 	this->parseOtherLines(tmp_vector);
@@ -47,9 +47,9 @@ void HttpRequest::parseFirstLine(std::string firstLine)
 
 	if (tmp_vector.size() != 3)
 		return;
-	request_map["Method"] = tmp_vector[0];
-	request_map["Path"] = tmp_vector[1];
-	request_map["Protocol"] = tmp_vector[2];
+	_request_map["Method"] = tmp_vector[0];
+	_request_map["Path"] = tmp_vector[1];
+	_request_map["Protocol"] = tmp_vector[2];
 };
 
 void HttpRequest::parseOtherLines(std::vector<std::string> tmp_vector)
@@ -64,7 +64,7 @@ void HttpRequest::parseOtherLines(std::vector<std::string> tmp_vector)
 		key = tmp_vector[i].substr(0, delimiter_position);
 		value = tmp_vector[i].substr(delimiter_position + 1);
 		if (HttpRequest::trim(key).length() != 0 || HttpRequest::trim(value).length() != 0)
-			request_map[HttpRequest::trim(key)] = HttpRequest::trim(value);
+			_request_map[HttpRequest::trim(key)] = HttpRequest::trim(value);
 	}
 };
 
@@ -90,7 +90,7 @@ std::string HttpRequest::trim(const std::string &s)
 void HttpRequest::printHttpReq()
 {
 	std::map<std::string, std::string>::iterator it;
-	for (it = request_map.begin(); it != request_map.end(); it++)
+	for (it = _request_map.begin(); it != _request_map.end(); it++)
 	{
 		std::cout << it->first << " : " << it->second << std::endl;
 	}
@@ -98,22 +98,22 @@ void HttpRequest::printHttpReq()
 
 std::string HttpRequest::getMethod() const
 {
-	return request_map.at("Method");
+	return _request_map.at("Method");
 };
 
 std::string HttpRequest::getPath() const
 {
-	return request_map.at("Path");
+	return _request_map.at("Path");
 };
 
 std::string HttpRequest::getProtocol() const
 {
-	return request_map.at("Protocol");
+	return _request_map.at("Protocol");
 };
 
 std::string HttpRequest::getHost() const
 {
-	return request_map.at("Host");
+	return _request_map.at("Host");
 };
 
 bool HttpRequest::methodIsAuthorized(std::string method) const

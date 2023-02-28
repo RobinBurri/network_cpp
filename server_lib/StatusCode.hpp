@@ -13,6 +13,7 @@ private:
 public:
 	StatusCode();
 	std::string &operator[](std::string status_code);
+	std::string get_key_value_formated(int code) const;
 };
 
 #endif

@@ -13,12 +13,13 @@ void HttpResponse::init_response_map(void) {
 	_response_map["Content-Length"] = "";
 	_response_map["Content-Type"] = "";
 	_response_map["Connection"] = "";
+	_response_map["Protocol"] = "HTTP/1.1 ";
 };
 
-void HttpResponse::load_response_map(void)
+void HttpResponse::load_response_map(int status_code)
 {
-	_response_map["Status-line"] += "HTTP/1.1 ";
 	_response_map["Date"] += get_time_stamp();
+	_response_map["Status-line"] = _response_map["Protocol"] + _status_code.get_key_value_formated(status_code);
 }
 
 std::string HttpResponse::get_time_stamp(void)
@@ -37,4 +38,13 @@ void HttpResponse::print_response_map(void)
 	{
 		std::cout << it->first << " : " << it->second << std::endl;
 	}
+}
+
+int HttpResponse::count_file_size(std::string path) {
+	std::ifstream stream;
+	int size;
+	stream.open(path.c_str(), std::ios::binary);
+	stream.seekg(0, std::ios::end);
+	size = stream.tellg();
+	return size;
 }

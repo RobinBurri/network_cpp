@@ -2,6 +2,7 @@
 #define HTTPRESPONSE_HPP
 
 #include "./StatusCode.hpp"
+#include <fstream>
 #include <string>
 
 class HttpResponse
@@ -10,13 +11,14 @@ public:
 	HttpResponse(void);
 	~HttpResponse(void);
 	std::string get_time_stamp(void);
+	int count_file_size(std::string path);
 	void init_response_map(void);
-	void load_response_map(void);
+	void load_response_map(int status_code);
 	void print_response_map(void);
 
 private:
 	std::map<std::string, std::string> _response_map;
-	// StatusCode _status_code;
+	StatusCode _status_code;
 	// std::string _full_response;
 	// size_t _header_size;
 	// size_t _body_size;
@@ -33,4 +35,5 @@ private:
 	Content-Length:
 	Content-Type:
 	Connection: Closed
+	Transfer-Encoding: chunked => ????
 */

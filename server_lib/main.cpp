@@ -32,7 +32,7 @@ int main()
 	while (1)
 	{
 		std::cout << "++++++ Waiting for new connection ++++++" << std::endl;
-		response_handler.load_response_map();
+		response_handler.load_response_map(200);
 		response_handler.print_response_map();
 		connection_fd = accept(sock.get_sock_id(), (struct sockaddr *)NULL, NULL);
 		if (connection_fd < 0)
