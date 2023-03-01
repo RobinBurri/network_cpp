@@ -1,12 +1,14 @@
-#include "./HttpResponse.hpp"
+#include "HttpResponse.hpp"
 
-HttpResponse::HttpResponse(void){
+HttpResponse::HttpResponse(void)
+{
 	init_response_map();
 };
 
 HttpResponse::~HttpResponse(void){};
 
-void HttpResponse::init_response_map(void) {
+void HttpResponse::init_response_map(void)
+{
 	_response_map["Status-line"] = "";
 	_response_map["Date"] = "";
 	_response_map["Server"] = "Webserver";
@@ -40,14 +42,16 @@ void HttpResponse::print_response_map(void)
 	}
 }
 
-int HttpResponse::count_file_size(std::string path) {
+int HttpResponse::count_file_size(std::string path)
+{
 	std::ifstream stream;
 	int size = 0;
-	if (file_exists(path)) {
-	stream.open(path.c_str(), std::ios::binary);
-	stream.seekg(0, std::ios::end);
-	size = stream.tellg();
-	stream.close();
+	if (file_exists(path))
+	{
+		stream.open(path.c_str(), std::ios::binary);
+		stream.seekg(0, std::ios::end);
+		size = stream.tellg();
+		stream.close();
 	}
 	return size;
 }
@@ -56,10 +60,34 @@ bool HttpResponse::file_exists(std::string path)
 {
 	std::ifstream file;
 	bool ret = false;
-	file.open(path);
-	if (file){
+	file.open(path.c_str());
+	if (file)
+	{
 		ret = true;
 		file.close();
 	}
 	return ret;
+}
+
+void set_response_type(std::string path, std::string type)
+{
+	if (type != "")
+	{
+		_response_map["Content-Type"] = type;
+	}
+	type = path.substr(path.rfind(".") + 1, path.size() - path.rfind("."));
+	if (type == "html")
+		_response_map["Content-Type"] = "text/html";
+	else if (type == "css")
+		_response_map["Content-Type"] = "text/css";
+	else if (type == "js")
+		_response_map["Content-Type"] = "text/javascript";
+	else if (type == "jpeg" || type == "jpg")
+		_response_map["Content-Type"] = "image/jpeg";
+	else if (type == "png")
+		_response_map["Content-Type"] = "image/png";
+	else if (type == "bmp")
+		_response_map["Content-Type"] = "image/bmp";
+	else
+		_response_map["Content-Type"] = "text/plain";
 }
