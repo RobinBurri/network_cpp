@@ -40,3 +40,8 @@ private:
 	Connection: Closed
 	Transfer-Encoding: chunked => ????
 */
+
+/**
+ * TODO => add a &HttpRequest to HttpResponse constructor?
+ * TODO => 
+*/
