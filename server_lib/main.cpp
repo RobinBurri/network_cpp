@@ -55,12 +55,14 @@ int main()
 		std::cout << "***************** HTTP REQUEST START****************" << std::endl;
 		requestHandler.printHttpReq();
 		std::cout << "***************** HTTP REQUEST END ****************" << std::endl;
+	
 		std::cout << "***************** HTTP REPONSE START****************" << std::endl;
 		response_handler.load_http_request(requestHandler);
 		response_handler.print_response_map();
 		response_handler.init_response_map();
 
 		std::cout << "***************** HTTP REPONSE END ****************" << std::endl;
+	
 
 		send(connection_fd, uniq_response, sizeof(uniq_response), 0);
 		std::cout << "RESPONSE SEND" << std::endl;
@@ -69,3 +71,9 @@ int main()
 	}
 	return 0;
 }
+
+/*
+	! index.html = 769 (httpResponse = 769)
+	! 404.html = 380  (httpResponse = 308)
+	! submitPage.html = 1006  (httpResponse = 1006)
+*/

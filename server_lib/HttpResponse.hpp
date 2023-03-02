@@ -17,6 +17,7 @@ public:
 	void init_response_map(void);
 	void load_response_map(int status_code);
 	void load_http_request(HttpRequest &req);
+	void load_content_length(void);
 	void print_response_map(void);
 	bool file_exists(std::string path);
 	void set_response_type(std::string path, std::string type);
@@ -29,7 +30,7 @@ public:
 	std::string _request_path;
 	// std::string _full_response;
 	// size_t _header_size;
-	size_t _body_size;
+	int _body_size;
 	// size_t _total_size;
 	// std::string _date;
 
@@ -47,6 +48,5 @@ public:
 */
 
 /**
- * TODO => add a &HttpRequest to HttpResponse constructor?
- * TODO => 
-*/
+ * TODO => construct header string 
+ */
