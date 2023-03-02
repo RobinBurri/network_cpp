@@ -32,8 +32,8 @@ int main()
 	while (1)
 	{
 		std::cout << "++++++ Waiting for new connection ++++++" << std::endl;
-		response_handler.load_response_map(200);
-		response_handler.print_response_map();
+		// response_handler.load_response_map(200);
+		// response_handler.print_response_map();
 		connection_fd = accept(sock.get_sock_id(), (struct sockaddr *)NULL, NULL);
 		if (connection_fd < 0)
 		{
@@ -52,7 +52,16 @@ int main()
 			memset(buffer, 0, MAXLINE);
 			recv_return = recv(connection_fd, buffer, MAXLINE - 1, 0);
 		}
+		std::cout << "***************** HTTP REQUEST START****************" << std::endl;
 		requestHandler.printHttpReq();
+		std::cout << "***************** HTTP REQUEST END ****************" << std::endl;
+		std::cout << "***************** HTTP REPONSE START****************" << std::endl;
+		response_handler.load_http_request(requestHandler);
+		response_handler.print_response_map();
+		response_handler.init_response_map();
+
+		std::cout << "***************** HTTP REPONSE END ****************" << std::endl;
+
 		send(connection_fd, uniq_response, sizeof(uniq_response), 0);
 		std::cout << "RESPONSE SEND" << std::endl;
 		close(connection_fd);

@@ -2,7 +2,7 @@ const form = document.getElementById('form');
 const input = document.getElementById('text-input');
 const itemsList = document.getElementById('items-hook');
 
-const url = "http://localhost:12345/testpost";
+const url = "http://localhost:8080/website/index.html";
 
 
 

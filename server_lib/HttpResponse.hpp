@@ -5,26 +5,31 @@
 #include <fstream>
 #include <string>
 #include <time.h>
+#include "HttpRequest.hpp"
 
 class HttpResponse
 {
 public:
-	HttpResponse(void);
+	HttpResponse();
 	~HttpResponse(void);
 	std::string get_time_stamp(void);
-	int count_file_size(std::string path);
+	void count_file_size(std::string path);
 	void init_response_map(void);
 	void load_response_map(int status_code);
+	void load_http_request(HttpRequest &req);
 	void print_response_map(void);
 	bool file_exists(std::string path);
 	void set_response_type(std::string path, std::string type);
+	void response_handler(void);
 
-private:
-	std::map<std::string, std::string> _response_map;
+		private : std::map<std::string, std::string>
+					  _response_map;
 	StatusCode _status_code;
+	HttpRequest _request;
+	std::string _request_path;
 	// std::string _full_response;
 	// size_t _header_size;
-	// size_t _body_size;
+	size_t _body_size;
 	// size_t _total_size;
 	// std::string _date;
 

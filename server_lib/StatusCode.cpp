@@ -1,4 +1,4 @@
-#include "statusCode.hpp"
+#include "StatusCode.hpp"
 
 /*
 	https://www.rfc-editor.org/rfc/rfc2616#section-9.3
