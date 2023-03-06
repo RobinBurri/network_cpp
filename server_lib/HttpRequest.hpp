@@ -9,14 +9,9 @@
 
 class HttpRequest
 {
-  private:
-	std::map<std::string, std::string> _request_map;
-	void							   parseFirstLine(std::string firstLine);
-	void							   parseOtherLines(std::vector<std::string> tmp_vector);
-
   public:
 	HttpRequest();
-	~HttpRequest();
+	virtual ~HttpRequest();
 
 	bool		methodIsAuthorized(std::string method) const;
 	void		parseBuffer(char *buff);
@@ -27,6 +22,11 @@ class HttpRequest
 	std::string getPath() const;
 	std::string getProtocol() const;
 	std::string getHost() const;
+
+  private:
+	std::map<std::string, std::string> _request_map;
+	void							   parseFirstLine(std::string firstLine);
+	void							   parseOtherLines(std::vector<std::string> tmp_vector);
 };
 
 #endif

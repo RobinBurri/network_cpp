@@ -27,13 +27,15 @@ int main()
 	HttpRequest requestHandler;
 	HttpResponse response_handler;
 	std::vector<std::string> header;
-	char uniq_response[2000] = "HTTP/1.1 200 OK\nContent-Type:text/html\nContent-Length: 160\n\n<html><head><title>Webserver dummy html page</title></head><body><h1>Welcome to Webserver dummy web page !!!</h1></body></html>";
 
+	char test_str[2000] = "HTTP/1.1 200 OK\nDate:Fri Mar  3 11:40:35 2023 GMT\nServer:Webserver\nContent-Length: 769\nContent-Type:text/html\nConnection:close\n\n<!DOCTYPE html>\n<html lang='en'>\n<head>\n<meta charset='UTF-8' />\n<meta http-equiv='X-UA-Compatible'content='IE=edge' />\n<meta name='viewport' content='width=device-width, initial-scale=1.0' />\n<link rel='stylesheet' href='style.css' />\n<title>Kill your eyes</title>\n</head>\n<body>\n<header>\n<div class='wrapper nav'>\n<div class='logo'><h2>Test Website</h2></div>\n<div class='navigation'>\n<a href='./index.html'>Home</a><a href='./submitPage.html'>Submit</a>\n</div>\n</div>\n</header>\n<main class='index-main'>\n<div class='wrapper'>\n<div class='centered-box'>\n<h1 class='title'>Welcome Tester Website</h1>\n</div>\n</div>\n</main>\n</body>\n</html>";
+
+	// char uniq_response[2000] = "HTTP/1.1 200 OK\nContent-Type:text/html\nContent-Length: 160\n\n<html><head><title>Webserver dummy html page</title></head><body><h1>Welcome to Webserver dummy web page !!!</h1></body></html>";
 	while (1)
 	{
 		std::cout << "++++++ Waiting for new connection ++++++" << std::endl;
-		// response_handler.load_response_map(200);
-		// response_handler.print_response_map();
+	
+
 		connection_fd = accept(sock.get_sock_id(), (struct sockaddr *)NULL, NULL);
 		if (connection_fd < 0)
 		{
@@ -54,17 +56,20 @@ int main()
 		}
 		std::cout << "***************** HTTP REQUEST START****************" << std::endl;
 		requestHandler.printHttpReq();
-		std::cout << "***************** HTTP REQUEST END ****************" << std::endl;
+		std::cout << "***************** HTTP REQUEST END ****************\n" << std::endl;
 	
-		std::cout << "***************** HTTP REPONSE START****************" << std::endl;
 		response_handler.load_http_request(requestHandler);
-		response_handler.print_response_map();
-		response_handler.init_response_map();
-
-		std::cout << "***************** HTTP REPONSE END ****************" << std::endl;
+		// std::cout << "***************** HTTP REPONSE START****************" << std::endl;
+		// response_handler.print_response_map();
+		// std::cout << "***************** HTTP REPONSE END ****************\n" << std::endl;
 	
-
-		send(connection_fd, uniq_response, sizeof(uniq_response), 0);
+		std::string res = response_handler.get_http_response();
+		std::cout << "$$$$$$$$$$$$$$$$$$$$$$$$$" << std::endl;
+		std::cout << res;
+		std::cout << "$$$$$$$$$$$$$$$$$$$$$$$$$" << std::endl;
+		// send(connection_fd, res.c_str(), sizeof(res.c_str()), 0);
+		send(connection_fd, test_str, sizeof(test_str), 0);
+		// send(connection_fd, uniq_response, sizeof(uniq_response), 0);
 		std::cout << "RESPONSE SEND" << std::endl;
 		close(connection_fd);
 		std::cout << "CONNECTION CLOSED" << std::endl;
