@@ -2,7 +2,8 @@ const form = document.getElementById('form');
 const input = document.getElementById('text-input');
 const itemsList = document.getElementById('items-hook');
 
-let url = "http://localhost:8080/website/";
+let urlbase = "http://localhost:8080/website/";
+let url = ""
 
 
 
@@ -12,10 +13,12 @@ const submitHandler = (e) => {
 	if (input.value.length === 0) return;
 	const htmlEl = createHtmlEl(input.value);
 	itemsList.appendChild(htmlEl);
+	url += urlbase;
 	url += `${input.value}.html`
-console.log(`url : ${url}`);
+	console.log(`url : ${url}`);
 	sendHttpRequest('GET', url, input.value);
 	input.value = "";
+	url = "";
 }
 
 const createHtmlEl = (str) => {

@@ -13,9 +13,7 @@ class HttpRequest
 	HttpRequest();
 	virtual ~HttpRequest();
 
-	bool		methodIsAuthorized(std::string method) const;
 	void		parseBuffer(char *buff);
-	std::string trim(const std::string &s);
 	void		printHttpReq();
 	// Getters
 	std::string getMethod() const;
@@ -24,6 +22,8 @@ class HttpRequest
 	std::string getHost() const;
 
   private:
+	bool		methodIsAuthorized(std::string method) const;
+	std::string trim(const std::string &s);
 	std::map<std::string, std::string> _request_map;
 	void							   parseFirstLine(std::string firstLine);
 	void							   parseOtherLines(std::vector<std::string> tmp_vector);

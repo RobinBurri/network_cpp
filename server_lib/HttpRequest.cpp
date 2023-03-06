@@ -11,10 +11,6 @@ void HttpRequest::parseBuffer(char *buff)
 	std::string str;
 	int delimiter_position = str_buff.find(delimiter);
 
-	// std::cout << "*************************************" << std::endl;
-	// std::cout << "RAW buff: " << str_buff << std::endl;
-	// std::cout << "*************************************" << std::endl;
-
 	while (delimiter_position != -1)
 	{
 		str = str_buff.substr(0, delimiter_position);

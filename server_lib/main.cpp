@@ -27,10 +27,8 @@ int main()
 	HttpRequest requestHandler;
 	HttpResponse response_handler;
 	std::vector<std::string> header;
+	int send_ret = 0;
 
-	char test_str[2000] = "HTTP/1.1 200 OK\nDate:Fri Mar  3 11:40:35 2023 GMT\nServer:Webserver\nContent-Length: 769\nContent-Type:text/html\nConnection:close\n\n<!DOCTYPE html>\n<html lang='en'>\n<head>\n<meta charset='UTF-8' />\n<meta http-equiv='X-UA-Compatible'content='IE=edge' />\n<meta name='viewport' content='width=device-width, initial-scale=1.0' />\n<link rel='stylesheet' href='style.css' />\n<title>Kill your eyes</title>\n</head>\n<body>\n<header>\n<div class='wrapper nav'>\n<div class='logo'><h2>Test Website</h2></div>\n<div class='navigation'>\n<a href='./index.html'>Home</a><a href='./submitPage.html'>Submit</a>\n</div>\n</div>\n</header>\n<main class='index-main'>\n<div class='wrapper'>\n<div class='centered-box'>\n<h1 class='title'>Welcome Tester Website</h1>\n</div>\n</div>\n</main>\n</body>\n</html>";
-
-	// char uniq_response[2000] = "HTTP/1.1 200 OK\nContent-Type:text/html\nContent-Length: 160\n\n<html><head><title>Webserver dummy html page</title></head><body><h1>Welcome to Webserver dummy web page !!!</h1></body></html>";
 	while (1)
 	{
 		std::cout << "++++++ Waiting for new connection ++++++" << std::endl;
@@ -56,7 +54,7 @@ int main()
 		}
 		std::cout << "***************** HTTP REQUEST START****************" << std::endl;
 		requestHandler.printHttpReq();
-		std::cout << "***************** HTTP REQUEST END ****************\n" << std::endl;
+		std::cout << "***************** HTTP REQUEST END ****************\n";
 	
 		response_handler.load_http_request(requestHandler);
 		// std::cout << "***************** HTTP REPONSE START****************" << std::endl;
@@ -67,9 +65,14 @@ int main()
 		std::cout << "$$$$$$$$$$$$$$$$$$$$$$$$$" << std::endl;
 		std::cout << res;
 		std::cout << "$$$$$$$$$$$$$$$$$$$$$$$$$" << std::endl;
-		// send(connection_fd, res.c_str(), sizeof(res.c_str()), 0);
-		send(connection_fd, test_str, sizeof(test_str), 0);
-		// send(connection_fd, uniq_response, sizeof(uniq_response), 0);
+		std::cout << "sizeof res : " << res.length() << std::endl;
+		send_ret = send(connection_fd, res.c_str(), res.length(), 0);
+		std::cout << "send_ret : " << send_ret << std::endl;
+		if (send_ret < static_cast<int>(res.length()))
+		{
+			std::cout << "send_ret : " << send_ret << std::endl;
+			send_ret = send(connection_fd, res.c_str(), res.length(), 0);
+		}
 		std::cout << "RESPONSE SEND" << std::endl;
 		close(connection_fd);
 		std::cout << "CONNECTION CLOSED" << std::endl;
