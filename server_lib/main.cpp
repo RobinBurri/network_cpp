@@ -65,9 +65,7 @@ int main()
 		std::cout << "$$$$$$$$$$$$$$$$$$$$$$$$$" << std::endl;
 		std::cout << res;
 		std::cout << "$$$$$$$$$$$$$$$$$$$$$$$$$" << std::endl;
-		std::cout << "sizeof res : " << res.length() << std::endl;
 		send_ret = send(connection_fd, res.c_str(), res.length(), 0);
-		std::cout << "send_ret : " << send_ret << std::endl;
 		if (send_ret < static_cast<int>(res.length()))
 		{
 			std::cout << "send_ret : " << send_ret << std::endl;
@@ -81,7 +79,5 @@ int main()
 }
 
 /*
-	! index.html = 769 (httpResponse = 769)
-	! 404.html = 380  (httpResponse = 308)
-	! submitPage.html = 1006  (httpResponse = 1006)
-*/
+ * create a html page template for every error codes
+ */

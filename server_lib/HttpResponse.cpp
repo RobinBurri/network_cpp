@@ -148,3 +148,14 @@ std::string HttpResponse::get_http_response(void)
 	ret  = _response_map["full-response-string"];
 	return ret;
 }
+
+void HttpResponse::create_error_html_page(int code, std::string error_msg)
+{
+	std::string html_page = "";
+	html_page += "<!DOCTYPE html><html><head><link rel=\"icon\" href=\"data:;base64,=\"><title>";
+	html_page += std::to_string(code);
+	html_page += "</title></head><body><div class=\" wrapper\"><div class=\"centered-box\"><h1 class=\"title\">";
+	html_page += error_msg;
+	html_page += "</h1></div></div></body></html>";
+	_response_map["body-string"] = html_page;
+}

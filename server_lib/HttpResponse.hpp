@@ -32,6 +32,7 @@ public:
 	void construct_header_string(void);
 	void construct_body_string(std::string path_to_file);
 	void construct_full_response(void);
+	void create_error_html_page(int code, std::string error_msg);
 };
 
 #endif
