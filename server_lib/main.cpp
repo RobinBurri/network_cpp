@@ -57,9 +57,9 @@ int main()
 		std::cout << "***************** HTTP REQUEST END ****************\n";
 	
 		response_handler.load_http_request(requestHandler);
-		// std::cout << "***************** HTTP REPONSE START****************" << std::endl;
-		// response_handler.print_response_map();
-		// std::cout << "***************** HTTP REPONSE END ****************\n" << std::endl;
+		std::cout << "***************** HTTP REPONSE START****************" << std::endl;
+		response_handler.print_response_map();
+		std::cout << "***************** HTTP REPONSE END ****************\n" << std::endl;
 	
 		std::string res = response_handler.get_http_response();
 		std::cout << "$$$$$$$$$$$$$$$$$$$$$$$$$" << std::endl;
@@ -80,4 +80,5 @@ int main()
 
 /*
  * create a html page template for every error codes
+  TODO => change header status line if 404, 405 etc....
  */

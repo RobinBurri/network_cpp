@@ -24,7 +24,6 @@ public:
 
 	void load_content_length(std::string str);
 	void init_response_map(void);
-	void response_handler(void);
 	void set_response_type(std::string path);
 	bool file_exists(std::string path);
 	void load_response_map(int status_code);
@@ -32,7 +31,7 @@ public:
 	void construct_header_string(void);
 	void construct_body_string(std::string path_to_file);
 	void construct_full_response(void);
-	void create_error_html_page(int code, std::string error_msg);
+	void create_error_html_page(int code);
 };
 
 #endif
