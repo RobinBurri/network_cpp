@@ -6,18 +6,20 @@ HttpResponse::~HttpResponse(void){};
 
 void HttpResponse::load_http_request(HttpRequest &req)
 {
-	_response_map["dir_location"] += req.getPath();
-	// std::cout << "dir_location at load_HTTP_REQUEST : " << _response_map["dir_location"] << std::endl;
+	init_response_map();
+	std::string requested_path = req.getPath();
+	_response_map["dir_location"] += requested_path;
+	std::cout << "dir_location at load_HTTP_REQUEST : " << _response_map["dir_location"] << std::endl;
 	std::cout << "METHOD: " << req.getMethod() << "Auth: " << req.methodIsAuthorized(req.getMethod()) << std::endl;
-	if (!req.methodIsAuthorized(req.getMethod()))
-	{
-		load_response_map(405);
-	}
-	if (!file_exists(_response_map["dir_location"]))
-	{
-		load_response_map(404);
-	}
-	else
+	// if (!req.methodIsAuthorized(req.getMethod()))
+	// {
+	// 	load_response_map(405);
+	// }
+	// // if (!file_exists(_response_map["dir_location"]))
+	// // {
+	// // 	load_response_map(404);
+	// // }
+	// else
 		load_response_map(200);
 }
 
@@ -38,19 +40,18 @@ void HttpResponse::init_response_map(void)
 
 void HttpResponse::load_response_map(int status_code)
 {
-	init_response_map();
 	_response_map["Date"] += get_time_stamp();
 	_response_map["Status-line"] = _response_map["Protocol"] + _status_code.get_key_value_formated(status_code);
-	if (status_code != 200)
-	{
-		set_response_type(".html");
-		create_error_html_page(status_code);
-	}
-	else
-	{
-		set_response_type(_request_path);
+	// if (status_code != 200)
+	// {
+		// set_response_type(".html");
+		// create_error_html_page(status_code);
+	// }
+	// else
+	// {
+		set_response_type(_response_map["dir_location"]);
 		construct_body_string(_response_map["dir_location"]);
-	}
+	// }
 	load_content_length(_response_map["body-string"]);
 	construct_header_string();
 	construct_full_response();
