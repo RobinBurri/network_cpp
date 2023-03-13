@@ -10,17 +10,19 @@ void HttpResponse::load_http_request(HttpRequest &req)
 	std::string requested_path = req.getPath();
 	_response_map["dir_location"] += requested_path;
 	std::cout << "dir_location at load_HTTP_REQUEST : " << _response_map["dir_location"] << std::endl;
-	std::cout << "METHOD: " << req.getMethod() << "Auth: " << req.methodIsAuthorized(req.getMethod()) << std::endl;
-	// if (!req.methodIsAuthorized(req.getMethod()))
-	// {
-	// 	load_response_map(405);
-	// }
-	// // if (!file_exists(_response_map["dir_location"]))
-	// // {
-	// // 	load_response_map(404);
-	// // }
-	// else
+	std::cout << "METHOD: " << req.getMethod() << "\nAuth: " << req.methodIsAuthorized(req.getMethod()) << std::endl;
+	if (!req.methodIsAuthorized(req.getMethod()))
+	{
+		load_response_map(405);
+	}
+	else if (!file_exists(_response_map["dir_location"]))
+	{
+		load_response_map(404);
+	}
+	else
+	{
 		load_response_map(200);
+	}
 }
 
 void HttpResponse::init_response_map(void)
@@ -42,16 +44,16 @@ void HttpResponse::load_response_map(int status_code)
 {
 	_response_map["Date"] += get_time_stamp();
 	_response_map["Status-line"] = _response_map["Protocol"] + _status_code.get_key_value_formated(status_code);
-	// if (status_code != 200)
-	// {
-		// set_response_type(".html");
-		// create_error_html_page(status_code);
-	// }
-	// else
-	// {
+	if (status_code != 200)
+	{
+		set_response_type(".html");
+		create_error_html_page(status_code);
+	}
+	else
+	{
 		set_response_type(_response_map["dir_location"]);
 		construct_body_string(_response_map["dir_location"]);
-	// }
+	}
 	load_content_length(_response_map["body-string"]);
 	construct_header_string();
 	construct_full_response();
@@ -100,6 +102,8 @@ void HttpResponse::set_response_type(std::string path)
 		_response_map["Content-Type"] = "image/png";
 	else if (type == "bmp")
 		_response_map["Content-Type"] = "image/bmp";
+	else if (type == "ico")
+		_response_map["Content-Type"] = "image/x-icon";
 	else
 		_response_map["Content-Type"] = "text/plain";
 }
@@ -164,7 +168,7 @@ std::string HttpResponse::get_http_response(void)
 void HttpResponse::create_error_html_page(int code)
 {
 	std::string html_page = "";
-	html_page += "<!DOCTYPE html><html><head><link rel=\"icon\" href=\"data:;base64,=\"><title>";
+	html_page += "<!DOCTYPE html><html><head><link rel=\"stylesheet\"href=\"style.css\"/><link rel=\"icon\" href=\"favicon.ico\"><title>";
 	html_page += std::to_string(code);
 	html_page += "</title></head><body><div class=\" wrapper\"><div class=\"centered-box\"><h1 class=\"title\">";
 	html_page += _status_code.get_key_value_formated(code);
