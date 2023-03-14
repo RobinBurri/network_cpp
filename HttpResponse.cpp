@@ -177,3 +177,14 @@ void HttpResponse::create_error_html_page(int code)
 	std::cout << "AUTO_HTML PAGE:\n"
 			  << html_page << std::endl;
 }
+
+// std::ostream &operator<<(std::ostream &output, HttpRequest::t_object const &req_map)
+// {
+// 	HttpRequest::t_object::const_iterator start;
+	
+// 	for (start = req_map.begin() ; start != req_map.end(); ++start)
+// 	{
+// 		output << start->first << " : " << start->second << "\n";
+// 	}
+// 	return output;
+// }

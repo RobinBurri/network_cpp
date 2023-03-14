@@ -53,7 +53,7 @@ int main()
 			recv_return = recv(connection_fd, buffer, MAXLINE - 1, 0);
 		}
 		std::cout << "***************** HTTP REQUEST START****************" << std::endl;
-		requestHandler.printHttpReq();
+		std::cout << requestHandler << std::endl;
 		std::cout << "***************** HTTP REQUEST END ****************\n";
 	
 		response_handler.load_http_request(requestHandler);

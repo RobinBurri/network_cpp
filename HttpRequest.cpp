@@ -1,7 +1,7 @@
 #include "./HttpRequest.hpp"
 
-HttpRequest::HttpRequest(){};
-HttpRequest::~HttpRequest(){};
+HttpRequest::HttpRequest(){}
+HttpRequest::~HttpRequest(){}
 
 void HttpRequest::parseBuffer(char *buff)
 {
@@ -24,7 +24,7 @@ void HttpRequest::parseBuffer(char *buff)
 	}
 	this->parseFirstLine(tmp_vector[0]);
 	this->parseOtherLines(tmp_vector);
-};
+}
 
 void HttpRequest::parseFirstLine(std::string firstLine)
 {
@@ -46,7 +46,7 @@ void HttpRequest::parseFirstLine(std::string firstLine)
 	_request_map["Method"] = tmp_vector[0];
 	_request_map["Path"] = tmp_vector[1];
 	_request_map["Protocol"] = tmp_vector[2];
-};
+}
 
 void HttpRequest::parseOtherLines(std::vector<std::string> tmp_vector)
 {
@@ -62,7 +62,7 @@ void HttpRequest::parseOtherLines(std::vector<std::string> tmp_vector)
 		if (HttpRequest::trim(key).length() != 0 || HttpRequest::trim(value).length() != 0)
 			_request_map[HttpRequest::trim(key)] = HttpRequest::trim(value);
 	}
-};
+}
 
 std::string HttpRequest::trim(const std::string &s)
 {
@@ -85,34 +85,44 @@ std::string HttpRequest::trim(const std::string &s)
 
 void HttpRequest::printHttpReq()
 {
-	std::map<std::string, std::string>::iterator it;
-	for (it = _request_map.begin(); it != _request_map.end(); it++)
+	for (std::map<std::string, std::string>::iterator it = _request_map.begin(); it != _request_map.end(); it++)
 	{
 		std::cout << it->first << " : " << it->second << std::endl;
 	}
-};
+}
 
 std::string HttpRequest::getMethod() const
 {
 	return _request_map.at("Method");
-};
+}
 
 std::string HttpRequest::getPath() const
 {
 	return _request_map.at("Path");
-};
+}
 
 std::string HttpRequest::getProtocol() const
 {
 	return _request_map.at("Protocol");
-};
+}
 
 std::string HttpRequest::getHost() const
 {
 	return _request_map.at("Host");
-};
+}
 
 bool HttpRequest::methodIsAuthorized(std::string method) const
 {
 	return (method.compare("GET") == 0 || method.compare("POST") == 0 || method.compare("DELETE") == 0);
+}
+
+std::ostream &operator<<(std::ostream &output, HttpRequest const &req)
+{
+	HttpRequest::t_object::const_iterator start;
+
+	for (start = req._request_map.begin(); start != req._request_map.end(); ++start)
+	{
+		output << start->first << " : " << start->second << "\n";
+	}
+	return output;
 }
