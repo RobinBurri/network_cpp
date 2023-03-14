@@ -11,13 +11,15 @@
 class HttpResponse
 {
 public:
+	typedef std::map<std::string, std::string> t_object;
+	t_object _response_map;
+
 	HttpResponse();
-	virtual ~HttpResponse(void);
+	~HttpResponse(void);
 	std::string get_http_response(void);
-	void print_response_map(void);
 	void load_http_request(HttpRequest &req);
 
-	private : std::map<std::string, std::string> _response_map;
+	private : 
 	StatusCode _status_code;
 	HttpRequest _request;
 	std::string _request_path;
@@ -33,5 +35,7 @@ public:
 	void construct_full_response(void);
 	void create_error_html_page(int code);
 };
+
+std::ostream &operator<<(std::ostream &, HttpResponse const &);
 
 #endif

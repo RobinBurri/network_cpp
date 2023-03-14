@@ -1,8 +1,8 @@
 #include "HttpResponse.hpp"
 
-HttpResponse::HttpResponse(void){};
+HttpResponse::HttpResponse(void){}
 
-HttpResponse::~HttpResponse(void){};
+HttpResponse::~HttpResponse(void){}
 
 void HttpResponse::load_http_request(HttpRequest &req)
 {
@@ -38,7 +38,7 @@ void HttpResponse::init_response_map(void)
 	_response_map["body-string"] = "";
 	_response_map["full-response-string"] = "";
 	_response_map["dir_location"] = "/Users/rburri/Desktop/network_cpp";
-};
+}
 
 void HttpResponse::load_response_map(int status_code)
 {
@@ -108,15 +108,6 @@ void HttpResponse::set_response_type(std::string path)
 		_response_map["Content-Type"] = "text/plain";
 }
 
-void HttpResponse::print_response_map(void)
-{
-	std::map<std::string, std::string>::iterator it;
-	for (it = _response_map.begin(); it != _response_map.end(); it++)
-	{
-		std::cout << it->first << " : " << it->second << std::endl;
-	}
-}
-
 void HttpResponse::construct_header_string(void)
 {
 	std::string CRLF = "\r\n";
@@ -178,13 +169,13 @@ void HttpResponse::create_error_html_page(int code)
 			  << html_page << std::endl;
 }
 
-// std::ostream &operator<<(std::ostream &output, HttpRequest::t_object const &req_map)
-// {
-// 	HttpRequest::t_object::const_iterator start;
-	
-// 	for (start = req_map.begin() ; start != req_map.end(); ++start)
-// 	{
-// 		output << start->first << " : " << start->second << "\n";
-// 	}
-// 	return output;
-// }
+std::ostream &operator<<(std::ostream &output, HttpResponse const &res)
+{
+	HttpRequest::t_object::const_iterator start;
+
+	for (start = res._response_map.begin(); start != res._response_map.end(); ++start)
+	{
+		output << start->first << " : " << start->second << "\n";
+	}
+	return output;
+}
