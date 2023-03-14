@@ -54,7 +54,7 @@ void HttpResponse::load_response_map(int status_code)
 		set_response_type(_response_map["dir_location"]);
 		construct_body_string(_response_map["dir_location"]);
 	}
-	load_content_length(_response_map["body-string"]);
+	set_content_length(_response_map["body-string"]);
 	construct_header_string();
 	construct_full_response();
 }
@@ -68,7 +68,7 @@ std::string HttpResponse::get_time_stamp(void)
 	return formated_date;
 }
 
-void HttpResponse::load_content_length(std::string str)
+void HttpResponse::set_content_length(std::string str)
 {
 	_response_map["Content-Length"] = std::to_string(str.length());
 }

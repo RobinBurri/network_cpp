@@ -22,9 +22,8 @@ public:
 	private : 
 	StatusCode _status_code;
 	HttpRequest _request;
-	std::string _request_path;
 
-	void load_content_length(std::string str);
+	void set_content_length(std::string str);
 	void init_response_map(void);
 	void set_response_type(std::string path);
 	bool file_exists(std::string path);
