@@ -4,8 +4,9 @@
 	https://www.rfc-editor.org/rfc/rfc2616#section-9.3
 */
 
-StatusCode::StatusCode(){
-	// 1xx Infomational
+StatusCode::StatusCode()
+{
+	// 1xx Infomationalgs
 	_status_codes["100"] = "Continue";
 	_status_codes["101"] = "Switching Protocols";
 	// 2xx Success"ful"
@@ -52,12 +53,14 @@ StatusCode::StatusCode(){
 	_status_codes["505"] = "HTTP Version Not Supported";
 }
 
-std::string &StatusCode::operator[](std::string status_code)
+std::string &
+StatusCode::operator[](std::string status_code)
 {
 	return _status_codes[status_code];
 }
 
-std::string StatusCode::get_key_value_formated(int code) const
+std::string
+StatusCode::get_key_value_formated(int code) const
 {
 	std::string code_str;
 	code_str = std::to_string(code);
