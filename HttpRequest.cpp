@@ -83,14 +83,6 @@ std::string HttpRequest::trim(const std::string &s)
 	return left_trimed_string.substr(0, end + 1);
 }
 
-void HttpRequest::printHttpReq()
-{
-	for (std::map<std::string, std::string>::iterator it = _request_map.begin(); it != _request_map.end(); it++)
-	{
-		std::cout << it->first << " : " << it->second << std::endl;
-	}
-}
-
 std::string HttpRequest::getMethod() const
 {
 	return _request_map.at("Method");
@@ -116,11 +108,16 @@ bool HttpRequest::methodIsAuthorized(std::string method) const
 	return (method.compare("GET") == 0 || method.compare("POST") == 0 || method.compare("DELETE") == 0);
 }
 
+const HttpRequest::t_object &HttpRequest::get_map() const
+{
+	return _request_map;
+}
+
 std::ostream &operator<<(std::ostream &output, HttpRequest const &req)
 {
 	HttpRequest::t_object::const_iterator start;
 
-	for (start = req._request_map.begin(); start != req._request_map.end(); ++start)
+	for (start = req.get_map().begin(); start != req.get_map().end(); ++start)
 	{
 		output << start->first << " : " << start->second << "\n";
 	}

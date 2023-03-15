@@ -32,8 +32,6 @@ int main()
 	while (1)
 	{
 		std::cout << "++++++ Waiting for new connection ++++++" << std::endl;
-	
-
 		connection_fd = accept(sock.get_sock_id(), (struct sockaddr *)NULL, NULL);
 		if (connection_fd < 0)
 		{
@@ -63,23 +61,14 @@ int main()
 		std::cout << "***************** HTTP REPONSE END ****************\n" << std::endl;
 	
 		std::string res = response_handler.get_http_response();
-		// std::cout << "$$$$$$$$$$$$$$$$$$$$$$$$$" << std::endl;
-		// std::cout << res;
-		// std::cout << "$$$$$$$$$$$$$$$$$$$$$$$$$" << std::endl;
 		send_ret = send(connection_fd, res.c_str(), res.length(), 0);
 		if (send_ret < static_cast<int>(res.length()))
 		{
 			std::cout << "send_ret : " << send_ret << std::endl;
 			send_ret = send(connection_fd, res.c_str(), res.length(), 0);
 		}
-		std::cout << "RESPONSE SEND" << std::endl;
 		close(connection_fd);
 		std::cout << "CONNECTION CLOSED" << std::endl;
 	}
 	return 0;
 }
-
-/*
- * create a html page template for every error codes
-  TODO => change header status line if 404, 405 etc....
- */
