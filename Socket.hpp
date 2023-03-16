@@ -6,6 +6,8 @@
 #include <errno.h>
 #include <stdio.h>
 #include <stdlib.h>
+#include <fcntl.h>
+#include <unistd.h>
 
 class Socket
 {
@@ -17,6 +19,7 @@ class Socket
 	void binding_socket();
 	void start_listening();
 	void test_socket(int item_to_test, const char *);
+	void set_socket_non_blocking();
 
   public:
 	Socket(int domain, int port, int type, int protocol, u_long interface);
@@ -27,7 +30,7 @@ class Socket
 	{
 		public:
 			const char *what() const throw();
-	}
+	};
 };
 
 #endif

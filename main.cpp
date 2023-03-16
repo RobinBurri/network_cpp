@@ -1,8 +1,4 @@
 #include "Socket.hpp"
-#include <iostream>
-#include <sys/types.h>
-#include <sys/socket.h>
-#include <unistd.h>
 #include <vector>
 #include <string>
 #include "HttpRequest.hpp"
@@ -33,9 +29,8 @@ int main()
 	{
 		std::cout << "++++++ Waiting for new connection ++++++" << std::endl;
 		std::cout << "SOCK Port: " << sock.get_port() << std::endl;
-		std::cout << "SOCK IP: " << sock.get_ip() << std::endl;
 
-		connection_fd = accept(sock.get_sock_id(), (struct sockaddr *)NULL, NULL);
+		connection_fd = accept(sock.get_sock_id(), NULL, NULL);
 		if (connection_fd < 0)
 		{
 			std::cout << "connection_fd: " << connection_fd << std::endl;
