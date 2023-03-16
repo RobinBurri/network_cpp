@@ -1,39 +1,36 @@
 #include "Socket.hpp"
 
-Socket::Socket(int domain , int port, int type , int protocol, u_long interface)
+Socket::Socket(int domain, int port, int type, int protocol, u_long interface)
 {
-	// Define address structure
 	_address.sin_family = domain;
 	_address.sin_port = htons(port);
 	_address.sin_addr.s_addr = htonl(interface);
 
-	createSocket(domain, type, protocol);
-	establishConnection();
-	startListening();
-
+	create_socket(domain, type, protocol);
+	binding_socket();
+	start_listening();
 }
 
-void Socket::createSocket(int domain, int type, int protocol)
+void
+Socket::create_socket(int domain, int type, int protocol)
 {
 	_sock_id = socket(domain, type, protocol);
-	test_socket(_sock_id);
+	test_socket(_sock_id, "create_socket() Fail!");
 }
-
-void Socket::establishConnection()
+void
+Socket::binding_socket()
 {
-	// a pointer to a struct sockaddr_in can be cast to a pointer to a struct sockaddr and vice-versa.
-	// So even though connect() wants a struct sockaddr*, you can still use a struct sockaddr_in and cast it at the last minute!
 	_connection = bind(_sock_id, (struct sockaddr *)&_address, sizeof(_address));
-	test_socket(_connection);
+	test_socket(_connection, "binding_socket() Fail!");
 }
-
-void Socket::startListening()
+void
+Socket::start_listening()
 {
 	int res = listen(_sock_id, 10);
-	test_socket(res);
+	test_socket(_sock_id, "start_listening() Fail!");
 }
 
-// no 3 change test_socket to be more generic
+void
 void Socket::test_socket(int item_to_test, const char *msg)
 {
 	if (item_to_test < 0)
@@ -44,22 +41,17 @@ void Socket::test_socket(int item_to_test, const char *msg)
 	}
 }
 
-int Socket::get_sock_id() const
+int
+Socket::get_sock_id() const
 {
 	return _sock_id;
 }
-// no 1
+
 unsigned short int Socket::get_port() const
 {
 	return ntohs(_address.sin_port);
 }
 
-void Socket::set_to_non_blocking()
-{
-	int ret;
-	
-}
-// 2 created exception for Socket to be thrown
 const char *Socket::SocketException::what() const throw()
 {
 	return "Exception: Socket set up failed.";
