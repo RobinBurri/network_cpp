@@ -3,7 +3,7 @@
 HttpRequest::HttpRequest(){}
 HttpRequest::~HttpRequest(){}
 
-void HttpRequest::parseBuffer(char *buff)
+void HttpRequest::parse_buffer(char *buff)
 {
 	std::vector<std::string> tmp_vector;
 	std::string str_buff = buff;
@@ -22,11 +22,11 @@ void HttpRequest::parseBuffer(char *buff)
 	{
 		_request_map["Body"] = this->trim(str_buff);
 	}
-	this->parseFirstLine(tmp_vector[0]);
-	this->parseOtherLines(tmp_vector);
+	this->parse_first_line(tmp_vector[0]);
+	this->parse_other_lines(tmp_vector);
 }
 
-void HttpRequest::parseFirstLine(std::string firstLine)
+void HttpRequest::parse_first_line(std::string firstLine)
 {
 	std::vector<std::string> tmp_vector;
 	std::string delimiter = " ";
@@ -48,7 +48,7 @@ void HttpRequest::parseFirstLine(std::string firstLine)
 	_request_map["Protocol"] = tmp_vector[2];
 }
 
-void HttpRequest::parseOtherLines(std::vector<std::string> tmp_vector)
+void HttpRequest::parse_other_lines(std::vector<std::string> tmp_vector)
 {
 	std::string delimiter = ":";
 	std::string key;
@@ -83,27 +83,27 @@ std::string HttpRequest::trim(const std::string &s)
 	return left_trimed_string.substr(0, end + 1);
 }
 
-std::string HttpRequest::getMethod() const
+std::string HttpRequest::get_method() const
 {
 	return _request_map.at("Method");
 }
 
-std::string HttpRequest::getPath() const
+std::string HttpRequest::get_path() const
 {
 	return _request_map.at("Path");
 }
 
-std::string HttpRequest::getProtocol() const
+std::string HttpRequest::get_protocol() const
 {
 	return _request_map.at("Protocol");
 }
 
-std::string HttpRequest::getHost() const
+std::string HttpRequest::get_host() const
 {
 	return _request_map.at("Host");
 }
 
-bool HttpRequest::methodIsAuthorized(std::string method) const
+bool HttpRequest::method_is_authorzed(std::string method) const
 {
 	return (method.compare("GET") == 0 || method.compare("POST") == 0 || method.compare("DELETE") == 0);
 }

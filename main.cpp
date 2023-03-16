@@ -24,14 +24,17 @@ int main()
 	int connection_fd;
 	char buffer[MAXLINE] = {0};
 	int recv_return;
-	HttpRequest requestHandler;
-	HttpResponse response_handler;
+	HttpRequest req;
+	HttpResponse res;
 	std::vector<std::string> header;
 	int send_ret = 0;
 
 	while (1)
 	{
 		std::cout << "++++++ Waiting for new connection ++++++" << std::endl;
+		std::cout << "SOCK Port: " << sock.get_port() << std::endl;
+		std::cout << "SOCK IP: " << sock.get_ip() << std::endl;
+
 		connection_fd = accept(sock.get_sock_id(), (struct sockaddr *)NULL, NULL);
 		if (connection_fd < 0)
 		{
@@ -40,32 +43,35 @@ int main()
 			exit(EXIT_FAILURE);
 		}
 		recv_return = recv(connection_fd, buffer, MAXLINE - 1, 0);
-		while (recv_return > 0)
+		std::cout << "RECV SIZE: " << recv_return << std::endl;
+		req.parse_buffer(buffer);
+		if (req.get_method() == "POST")
 		{
-			requestHandler.parseBuffer(buffer);
-			if (buffer[recv_return - 1] == '\n' || recv_return < MAXLINE)
+			while (recv_return > 0)
 			{
-				break;
+				if (buffer[recv_return - 1] == '\n' || recv_return < MAXLINE)
+				{
+					break;
+				}
+				memset(buffer, 0, MAXLINE);
+				recv_return = recv(connection_fd, buffer, MAXLINE - 1, 0);
 			}
-			memset(buffer, 0, MAXLINE);
-			recv_return = recv(connection_fd, buffer, MAXLINE - 1, 0);
 		}
 		std::cout << "***************** HTTP REQUEST START****************" << std::endl;
-		std::cout << requestHandler << std::endl;
+		std::cout << req << std::endl;
 		std::cout << "***************** HTTP REQUEST END ****************\n";
 	
-		response_handler.load_http_request(requestHandler);
-		std::cout << "***************** HTTP REPONSE START****************" << std::endl;
-		std::cout << response_handler << std::endl;
-		// response_handler.print_response_map();
-		std::cout << "***************** HTTP REPONSE END ****************\n" << std::endl;
+		res.load_http_request(req);
+		// std::cout << "***************** HTTP REPONSE START****************" << std::endl;
+		// std::cout << res << std::endl;
+		// std::cout << "***************** HTTP REPONSE END ****************\n" << std::endl;
 	
-		std::string res = response_handler.get_http_response();
-		send_ret = send(connection_fd, res.c_str(), res.length(), 0);
-		if (send_ret < static_cast<int>(res.length()))
+		std::string response = res.get_http_response();
+		send_ret = send(connection_fd, response.c_str(), response.length(), 0);
+		if (send_ret < static_cast<int>(response.length()))
 		{
 			std::cout << "send_ret : " << send_ret << std::endl;
-			send_ret = send(connection_fd, res.c_str(), res.length(), 0);
+			send_ret = send(connection_fd, response.c_str(), response.length(), 0);
 		}
 		close(connection_fd);
 		std::cout << "CONNECTION CLOSED" << std::endl;

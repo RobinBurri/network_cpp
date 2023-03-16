@@ -44,3 +44,8 @@ int Socket::get_sock_id() const
 {
 	return _sock_id;
 }
+
+unsigned short int Socket::get_port() const
+{
+	return ntohs(_address.sin_port);
+}

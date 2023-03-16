@@ -22,7 +22,7 @@ public:
 	void startListening();
 	void test_socket(int item_to_test);
 	int get_sock_id() const;
-
+	unsigned short int get_port() const;
 };
 
 #endif
