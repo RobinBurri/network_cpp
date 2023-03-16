@@ -18,6 +18,7 @@ void Socket::createSocket(int domain, int type, int protocol)
 	_sock_id = socket(domain, type, protocol);
 	test_socket(_sock_id);
 }
+
 void Socket::establishConnection()
 {
 	// a pointer to a struct sockaddr_in can be cast to a pointer to a struct sockaddr and vice-versa.
@@ -25,18 +26,21 @@ void Socket::establishConnection()
 	_connection = bind(_sock_id, (struct sockaddr *)&_address, sizeof(_address));
 	test_socket(_connection);
 }
+
 void Socket::startListening()
 {
 	int res = listen(_sock_id, 10);
 	test_socket(res);
 }
 
-void Socket::test_socket(int item_to_test)
+// no 3 change test_socket to be more generic
+void Socket::test_socket(int item_to_test, const char *msg)
 {
 	if (item_to_test < 0)
 	{
-		perror("Fail to set up socket");
-		exit(EXIT_FAILURE);
+		std::cerr << msg << std::endl;
+		close(_sock_id);
+		throw Socket::SocketException();
 	}
 }
 
@@ -44,8 +48,19 @@ int Socket::get_sock_id() const
 {
 	return _sock_id;
 }
-
+// no 1
 unsigned short int Socket::get_port() const
 {
 	return ntohs(_address.sin_port);
+}
+
+void Socket::set_to_non_blocking()
+{
+	int ret;
+	
+}
+// 2 created exception for Socket to be thrown
+const char *Socket::SocketException::what() const throw()
+{
+	return "Exception: Socket set up failed.";
 }

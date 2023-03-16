@@ -20,9 +20,18 @@ public:
 	void createSocket(int domain, int type, int protocol);
 	void establishConnection();
 	void startListening();
-	void test_socket(int item_to_test);
+	// 3 change test_socket to be more generic
+	void test_socket(int item_to_test, const char *);
 	int get_sock_id() const;
+	// 1
 	unsigned short int get_port() const;
+	void set_to_non_blocking();
+	// 2 created exception for Socket to be thrown
+	class SocketException : public std::exception
+	{
+		public:
+			const char *what() const throw();
+	}
 };
 
 #endif
