@@ -7,15 +7,15 @@ Response::Response(void) {}
 Response::~Response(void) {}
 
 void
-Response::load_http_request(HttpRequest &req)
+Response::load_http_request(Request &req)
 {
 	init_response_map();
-	std::string requested_path = req.getPath();
+	std::string requested_path = req.get_path();
 	_response_map["dir_location"] += requested_path;
 	std::cout << "dir_location at load_HTTP_REQUEST : " << _response_map["dir_location"] << std::endl;
-	std::cout << "METHOD: " << req.getMethod() << "\nAuth: " << req.methodIsAuthorized(req.getMethod())
+	std::cout << "METHOD: " << req.get_method() << "\nAuth: " << req.method_is_authorized(req.get_method())
 			  << std::endl;
-	if (!req.methodIsAuthorized(req.getMethod()))
+	if (!req.method_is_authorized(req.get_method()))
 	{
 		load_response_map(405);
 	}
@@ -189,13 +189,19 @@ Response::create_error_html_page(int code)
 std::ostream &
 operator<<(std::ostream &output, Response const &res)
 {
-	HttpRequest::t_object::const_iterator start;
+	Request::t_object::const_iterator start;
 
-	for (start = res._response_map.begin(); start != res._response_map.end(); ++start)
+	for (start = res.get_map().begin(); start != res.get_map().end(); ++start)
 	{
 		output << start->first << " : " << start->second << "\n";
 	}
 	return output;
+}
+
+const Response::t_object &
+Response::get_map() const
+{
+	return _response_map;
 }
 
 } /* namespace http */

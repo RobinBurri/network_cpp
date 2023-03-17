@@ -20,8 +20,8 @@ int main()
 	int connection_fd;
 	char buffer[MAXLINE] = {0};
 	int recv_return;
-	HttpRequest req;
-	HttpResponse res;
+	http::Request req;
+	http::Response res;
 	std::vector<std::string> header;
 	int send_ret = 0;
 
