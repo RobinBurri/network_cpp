@@ -1,8 +1,8 @@
-#include "Socket.hpp"
+#include "socket.hpp"
 #include <vector>
 #include <string>
-#include "HttpRequest.hpp"
-#include "HttpResponse.hpp"
+#include "request.hpp"
+#include "response.hpp"
 
 const int MAXLINE = 1000;
 
