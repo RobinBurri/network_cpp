@@ -10,11 +10,11 @@ namespace http {
 class StatusCode
 {
   private:
-	std::map<std::string, std::string> _status_codes;
+	std::map<int, std::string> _status_codes;
 
   public:
 	StatusCode();
-	std::string &operator[](std::string status_code);
+	std::string &operator[](int status_code);
 	std::string	 get_key_value_formated(int code) const;
 };
 
