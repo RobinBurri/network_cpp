@@ -76,12 +76,12 @@ Response::get_time_stamp(void)
 	return formated_date;
 }
 
-void
-Response::set_content_length(std::string str)
+void Response::set_content_length(std::string str)
 {
-	_response_map["Content-Length"] = std::to_string(str.length());
+	std::stringstream ss;
+	ss << str.length();
+	_response_map["Content-Length"] = ss.str();
 }
-
 bool
 Response::file_exists(std::string path)
 {
