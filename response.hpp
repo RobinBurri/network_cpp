@@ -8,6 +8,7 @@
 #include <sstream>
 #include "request.hpp"
 #include <unistd.h>
+#include "std98.hpp"
 
 namespace http {
 
