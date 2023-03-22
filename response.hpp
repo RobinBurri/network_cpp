@@ -7,6 +7,7 @@
 #include <time.h>
 #include <sstream>
 #include "request.hpp"
+#include <unistd.h>
 
 namespace http {
 
@@ -29,7 +30,6 @@ class Response
 	void		set_content_length(std::string str);
 	void		init_response_map(void);
 	void		set_response_type(std::string path);
-	bool		file_exists(std::string path);
 	void		load_response_map(int status_code);
 	std::string get_time_stamp(void);
 	void		construct_header_string(void);
