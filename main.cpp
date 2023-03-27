@@ -1,21 +1,13 @@
 #include "socket.hpp"
 #include <vector>
-#include <string>
 #include "request.hpp"
 #include "response.hpp"
 // select includes:
 #include <sys/time.h>
 #include <sys/types.h>
-#include <unistd.h>
 #include <cstdio>
-
-#include <stdio.h>
-#include <stdlib.h>
 #include <sys/ioctl.h>
-#include <sys/socket.h>
 #include <sys/time.h>
-#include <netinet/in.h>
-#include <errno.h>
 
 #define SERVER_PORT 12345
 #define BUFFER_SIZE 256
