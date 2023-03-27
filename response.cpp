@@ -3,20 +3,18 @@
 namespace http
 {
 
+	StatusCode Response::_status_code;
+
 	Response::Response(void) {}
 
 	Response::~Response(void) {}
 
 	void
-	Response::load_http_request(Request &req)
+	Response::load_http_request(Request &request)
 	{
 		init_response_map();
-		std::string requested_path = req.get_path();
-		_response_map["dir_location"] += requested_path;
-		std::cout << "dir_location at load_HTTP_REQUEST : " << _response_map["dir_location"] << std::endl;
-		std::cout << "METHOD: " << req.get_method() << "\nAuth: " << req.method_is_authorized(req.get_method())
-				  << std::endl;
-		if (!req.method_is_authorized(req.get_method()))
+		_response_map["dir_location"] += request.get_path();
+		if (!request.method_is_authorized(request.get_method()))
 		{
 			load_response_map(405);
 		}
@@ -49,7 +47,7 @@ namespace http
 	void
 	Response::load_response_map(int status_code)
 	{
-		_response_map["Date"] += get_time_stamp();
+		_response_map["Date"] = get_time_stamp();
 		_response_map["Status-line"] = _response_map["Protocol"] + _status_code.get_key_value_formated(status_code);
 		if (status_code != 200)
 		{
@@ -76,11 +74,10 @@ namespace http
 		return formated_date;
 	}
 
-	void Response::set_content_length(std::string str)
+	void
+	Response::set_content_length(std::string str)
 	{
-		std::stringstream ss;
-		ss << str.length();
-		_response_map["Content-Length"] = ss.str();
+		_response_map["Content-Length"] = std98::to_string(str.length());
 	}
 
 	void
@@ -111,19 +108,7 @@ namespace http
 	{
 		std::string CRLF = "\r\n";
 
-		_response_map["header-string"] += _response_map["Status-line"];
-		_response_map["header-string"] += CRLF;
-		_response_map["header-string"] += "Date: " + _response_map["Date"];
-		_response_map["header-string"] += CRLF;
-		_response_map["header-string"] += "Server: " + _response_map["Server"];
-		_response_map["header-string"] += CRLF;
-		_response_map["header-string"] += "Content-Length: " + _response_map["Content-Length"];
-		_response_map["header-string"] += CRLF;
-		_response_map["header-string"] += "Content-Type: " + _response_map["Content-Type"];
-		_response_map["header-string"] += CRLF;
-		_response_map["header-string"] += "Connection: " + _response_map["Connection"];
-		_response_map["header-string"] += CRLF;
-		_response_map["header-string"] += CRLF;
+		_response_map["header-string"] = _response_map["Status-line"] + CRLF + "Date: " + _response_map["Date"] + CRLF + "Server: " + _response_map["Server"] + CRLF + "Content-Length: " + _response_map["Content-Length"] + CRLF + "Content-Type: " + _response_map["Content-Type"] + CRLF + "Connection: " + _response_map["Connection"] + CRLF + CRLF;
 	}
 
 	void
@@ -135,7 +120,7 @@ namespace http
 		file.open(path_to_file.c_str());
 		if (file.fail())
 		{
-			std::cout << "Open file error" << std::endl;
+			std::cerr << "Open file error" << std::endl;
 			return;
 		}
 		buffer << file.rdbuf();
@@ -146,30 +131,28 @@ namespace http
 	void
 	Response::construct_full_response(void)
 	{
-		_response_map["full-response-string"] += _response_map["header-string"];
-		_response_map["full-response-string"] += _response_map["body-string"];
+		_response_map["full-response-string"] = _response_map["header-string"] + _response_map["body-string"];
 	}
 
 	std::string
 	Response::get_http_response(void)
 	{
-		std::string ret;
-		ret = _response_map["full-response-string"];
-		return ret;
+		return _response_map["full-response-string"];
 	}
 
-	void Response::create_error_html_page(int code)
+	void
+	Response::create_error_html_page(int code)
 	{
-		_response_map["body-string"] = "<!DOCTYPE html><html><head><link rel=\"stylesheet\"href=\"style.css\"/><link rel=\"icon\" href=\"favicon.ico\"><title>" + std98::to_string(code) + "</title></head><body><div class=\" wrapper\"><div class=\"centered-box\"><h1 class=\"title\">" + _status_code.get_key_value_formated(code)
-		+ "</h1></div></div></body></html>";
+		_response_map["body-string"] = "<!DOCTYPE html><html><head><link rel=\"stylesheet\"href=\"style.css\"/><link rel=\"icon\" "
+									   "href=\"favicon.ico\"><title>" +
+									   std98::to_string(code) + "</title></head><body><div class=\" wrapper\"><div class=\"centered-box\"><h1 class=\"title\">" + _status_code.get_key_value_formated(code) + "</h1></div></div></body></html>";
 	}
 
 	std::ostream &
-	operator<<(std::ostream &output, Response const &res)
+	operator<<(std::ostream &output, Response const &response)
 	{
-		Request::t_object::const_iterator start;
-
-		for (start = res.get_map().begin(); start != res.get_map().end(); ++start)
+		for (Response::t_object::const_iterator start(response.get_map().begin());
+			 start != response.get_map().end(); ++start)
 		{
 			output << start->first << " : " << start->second << "\n";
 		}
