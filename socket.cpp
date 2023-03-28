@@ -1,6 +1,6 @@
 #include "socket.hpp"
 
-Socket::Socket(int domain, int port, int type, int protocol, u_long interface)
+Socket::Socket(int domain, unsigned short port, int type, int protocol, u_long interface)
 {
 	_address.sin_family = domain;
 	_address.sin_port = htons(port);
@@ -22,6 +22,7 @@ Socket::create_socket(int domain, int type, int protocol)
 void
 Socket::binding_socket()
 {
+	/* Bind the socket to the address (port) */
 	_connection = bind(_sock_id, (struct sockaddr *)&_address, sizeof(_address));
 	test_socket(_connection, "binding_socket() Fail!");
 }
@@ -51,7 +52,7 @@ Socket::get_sock_id() const
 	return _sock_id;
 }
 
-unsigned short int Socket::get_port() const
+unsigned short Socket::get_port() const
 {
 	return ntohs(_address.sin_port);
 }
@@ -60,12 +61,12 @@ void Socket::set_socket_non_blocking()
 {
 	int ret;
 	int val = 1;
+	/* Allow socket descriptor to be reuseable */
 	ret = setsockopt(_sock_id, SOL_SOCKET, SO_REUSEADDR, &val, sizeof(val));
 	test_socket(ret, "setsockopt() Fail!");
-
-	// Following code only working after select() is implemented
-	// ret = fcntl(_sock_id, F_SETFL, O_NONBLOCK);
-	// test_socket(ret, "fcnt() Fail!");
+	/* Set socket to be nonblocking. */
+	ret = fcntl(_sock_id, F_SETFL, O_NONBLOCK);
+	test_socket(ret, "fcnt() Fail!");
 }
 
 const char *Socket::SocketException::what() const throw()

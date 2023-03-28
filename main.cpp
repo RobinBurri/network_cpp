@@ -17,171 +17,74 @@
 
 int main()
 {
-	int i, len, rc, on = 1;
-	int listen_sd, max_sd, new_sd;
+	int i, len, rc = 1;
+	int select_ret = 0;
+	int listen_sd1, listen_sd2, max_sd, new_sd;
 	int desc_ready, end_server = FALSE;
 	int close_conn;
 	char buffer[BUFFER_SIZE];
 	char buffer_null_terminated[BUFFER_SIZE + 1];
-	struct sockaddr_in6 addr;
-	struct timeval timeout;
 	struct fd_set master_set, working_set;
+	Socket socket1(AF_INET, 8080, SOCK_STREAM, 0, INADDR_ANY);
+	Socket socket2(AF_INET, 9090, SOCK_STREAM, 0, INADDR_ANY);
 
-
-	/*************************************************************/
-	/* Create an AF_INET6 stream socket to receive incoming      */
-	/* connections on                                            */
-	/*************************************************************/
-	listen_sd = socket(AF_INET6, SOCK_STREAM, 0);
-	if (listen_sd < 0)
-	{
-		perror("socket() failed");
-		exit(-1);
-	}
-
-	/*************************************************************/
-	/* Allow socket descriptor to be reuseable                   */
-	/*************************************************************/
-	rc = setsockopt(listen_sd, SOL_SOCKET, SO_REUSEADDR,
-					(char *)&on, sizeof(on));
-	if (rc < 0)
-	{
-		perror("setsockopt() failed");
-		close(listen_sd);
-		exit(-1);
-	}
-
-	/*************************************************************/
-	/* Set socket to be nonblocking. All of the sockets for      */
-	/* the incoming connections will also be nonblocking since   */
-	/* they will inherit that state from the listening socket.   */
-	/*************************************************************/
-	rc = ioctl(listen_sd, FIONBIO, (char *)&on);
-	if (rc < 0)
-	{
-		perror("ioctl() failed");
-		close(listen_sd);
-		exit(-1);
-	}
-
-	/*************************************************************/
-	/* Bind the socket                                           */
-	/*************************************************************/
-	memset(&addr, 0, sizeof(addr));
-	addr.sin6_family = AF_INET6;
-	memcpy(&addr.sin6_addr, &in6addr_any, sizeof(in6addr_any));
-	addr.sin6_port = htons(SERVER_PORT);
-	rc = bind(listen_sd,
-			  (struct sockaddr *)&addr, sizeof(addr));
-	if (rc < 0)
-	{
-		perror("bind() failed");
-		close(listen_sd);
-		exit(-1);
-	}
-
-	/*************************************************************/
-	/* Set the listen back log                                   */
-	/*************************************************************/
-	rc = listen(listen_sd, 32);
-	if (rc < 0)
-	{
-		perror("listen() failed");
-		close(listen_sd);
-		exit(-1);
-	}
-
-	/*************************************************************/
-	/* Initialize the master fd_set                              */
-	/*************************************************************/
+	listen_sd1 = socket1.get_sock_id();
+	listen_sd2 = socket2.get_sock_id();
 	FD_ZERO(&master_set);
-	max_sd = listen_sd;
-	FD_SET(listen_sd, &master_set);
+	/* FD_ZERO() clears out the master_set called socks, so that
+		it doesn't contain any file descriptors. */
+	max_sd = listen_sd2;
+	FD_SET(listen_sd1, &master_set);
+	FD_SET(listen_sd2, &master_set);
+	/* FD_SET() adds the file descriptor "sock" to the master_set,
+		so that select() will return if a connection comes in
+		on that socket (which means you have to do accept(). */
 
-	/*************************************************************/
-	/* Initialize the timeval struct to 3 minutes.  If no        */
-	/* activity after 3 minutes this program will end.           */
-	/*************************************************************/
-	timeout.tv_sec = 3 * 60;
-	timeout.tv_usec = 0;
-
-	/*************************************************************/
-	/* Loop waiting for incoming connects or for incoming data   */
-	/* on any of the connected sockets.                          */
-	/*************************************************************/
+	/* Loop waiting for incoming connects or for incoming data
+		on any of the connected sockets. */
 	do
 	{
-		/**********************************************************/
-		/* Copy the master fd_set over to the working fd_set.     */
-		/**********************************************************/
 		memcpy(&working_set, &master_set, sizeof(master_set));
-
-		/**********************************************************/
-		/* Call select() and wait 3 minutes for it to complete.   */
-		/**********************************************************/
 		printf("Waiting on select()...\n");
-		rc = select(max_sd + 1, &working_set, NULL, NULL, &timeout);
+		std::cout << "max_sd: " << max_sd << std::endl;
 
-		/**********************************************************/
-		/* Check to see if the select call failed.                */
-		/**********************************************************/
-		if (rc < 0)
+		select_ret = select(max_sd + 1, &working_set, NULL, NULL, NULL);
+		if (select_ret < 0)
 		{
 			perror("  select() failed");
 			break;
 		}
 
-		/**********************************************************/
-		/* Check to see if the 3 minute time out expired.         */
-		/**********************************************************/
-		if (rc == 0)
-		{
-			printf("  select() timed out.  End program.\n");
-			break;
-		}
-
-		/**********************************************************/
-		/* One or more descriptors are readable.  Need to         */
-		/* determine which ones they are.                         */
-		/**********************************************************/
-		desc_ready = rc;
+		/* One or more descriptors are readable.  Need to
+			determine which ones they are. */
+		desc_ready = select_ret;
 		for (i = 0; i <= max_sd && desc_ready > 0; ++i)
 		{
-			/*******************************************************/
-			/* Check to see if this descriptor is ready            */
-			/*******************************************************/
+			/* Check to see if this descriptor is ready */
 			if (FD_ISSET(i, &working_set))
 			{
-				/****************************************************/
-				/* A descriptor was found that was readable - one   */
-				/* less has to be looked for.  This is being done   */
-				/* so that we can stop looking at the working set   */
-				/* once we have found all of the descriptors that   */
-				/* were ready.                                      */
-				/****************************************************/
+				/* A descriptor was found that was readable - one
+					less has to be looked for.  This is being done
+					so that we can stop looking at the working set
+					once we have found all of the descriptors that
+					were ready. */
 				desc_ready -= 1;
 
-				/****************************************************/
-				/* Check to see if this is the listening socket     */
-				/****************************************************/
-				if (i == listen_sd)
+				/* Check to see if this is the listening socket */
+				if (i == listen_sd2 || i == listen_sd1)
 				{
 					printf("  Listening socket is readable\n");
-					/*************************************************/
-					/* Accept all incoming connections that are      */
-					/* queued up on the listening socket before we   */
-					/* loop back and call select again.              */
-					/*************************************************/
+					/* Accept all incoming connections that are
+						queued up on the listening socket before we
+						loop back and call select again. */
 					do
 					{
-						/**********************************************/
-						/* Accept each incoming connection.  If       */
-						/* accept fails with EWOULDBLOCK, then we     */
-						/* have accepted all of them.  Any other      */
-						/* failure on accept will cause us to end the */
-						/* server.                                    */
-						/**********************************************/
-						new_sd = accept(listen_sd, NULL, NULL);
+						/* Accept each incoming connection.  If
+							accept fails with EWOULDBLOCK, then we
+							have accepted all of them.  Any other
+							failure on accept will cause us to end the
+							server.                                    */
+						new_sd = accept(i, NULL, NULL);
 						if (new_sd < 0)
 						{
 							if (errno != EWOULDBLOCK)
@@ -192,26 +95,17 @@ int main()
 							break;
 						}
 
-						/**********************************************/
-						/* Add the new incoming connection to the     */
-						/* master read set                            */
-						/**********************************************/
+						/* Add the new incoming connection to the
+							master read set	*/
 						printf("  New incoming connection - %d\n", new_sd);
 						FD_SET(new_sd, &master_set);
 						if (new_sd > max_sd)
 							max_sd = new_sd;
-
-						/**********************************************/
-						/* Loop back up and accept another incoming   */
-						/* connection                                 */
-						/**********************************************/
 					} while (new_sd != -1);
 				}
 
-				/****************************************************/
-				/* This is not the listening socket, therefore an   */
-				/* existing connection must be readable             */
-				/****************************************************/
+				/* This is not the listening socket, therefore an 
+				existing connection must be readable */
 				else
 				{
 					http::Request req;
@@ -219,19 +113,18 @@ int main()
 					std::string str_buff = "";
 					printf("  Descriptor %d is readable\n", i);
 					close_conn = FALSE;
-					/*************************************************/
-					/* Receive all incoming data on this socket      */
-					/* before we loop back and call select again.    */
-					/*************************************************/
+
+					/* Receive all incoming data on this socket
+						before we loop back and call select again. */
 					do
 					{
 
-						/**********************************************/
-						/* Receive data on this connection until the  */
-						/* recv fails with EWOULDBLOCK.  If any other */
-						/* failure occurs, we will close the          */
-						/* connection.                                */
-						/**********************************************/
+
+						/* Receive data on this connection until the 
+							recv fails with EWOULDBLOCK.  If any other 
+							failure occurs, we will close the
+							connection.  */
+
 						rc = recv(i, buffer, sizeof(buffer), 0);
 						if (rc < 0)
 						{
@@ -243,10 +136,8 @@ int main()
 							break;
 						}
 
-						/**********************************************/
-						/* Check to see if the connection has been    */
-						/* closed by the client                       */
-						/**********************************************/
+						/* Check to see if the connection has been
+							closed by the client  */
 						if (rc == 0)
 						{
 							printf("  Connection closed\n");
@@ -254,9 +145,7 @@ int main()
 							break;
 						}
 
-						/**********************************************/
-						/* Data was received                          */
-						/**********************************************/
+						/* Data was received  */
 						if (rc > 0)
 						{
 							memcpy(buffer_null_terminated, buffer, rc);
@@ -265,30 +154,17 @@ int main()
 						}
 						len = rc;
 						printf("  %d bytes received\n", len);
-						// printf("  %s\n", buffer);
-
-						/**********************************************/
-						/* Echo the data back to the client           */
-						/**********************************************/
-						// rc = send(i, buffer, len, 0);
-						// if (rc < 0)
-						// {
-						// 	perror("  send() failed");
-						// 	close_conn = TRUE;
-						// 	break;
-						// }
 
 					} while (TRUE);
 					req.parse_buffer(str_buff);
-					std::cout << "***************** HTTP REQUEST START****************" << std::endl;
-					std::cout << req << std::endl;
-					std::cout << "***************** HTTP REQUEST END ****************\n";
+					// std::cout << "***************** HTTP REQUEST START****************" << std::endl;
+					// std::cout << req << std::endl;
+					// std::cout << "***************** HTTP REQUEST END ****************\n";
 
 					res.load_http_request(req);
-					std::cout << "***************** HTTP REPONSE START****************" << std::endl;
-					std::cout << res << std::endl;
-					std::cout << "***************** HTTP REPONSE END ****************\n"
-							  << std::endl;
+					// std::cout << "***************** HTTP REPONSE START****************" << std::endl;
+					// std::cout << res << std::endl;
+					// std::cout << "***************** HTTP REPONSE END ****************\n" << std::endl;
 					std::string response = res.get_http_response();
 					int send_ret = send(i, response.c_str(), response.length(), 0);
 					if (send_ret < static_cast<int>(response.length()))
@@ -297,15 +173,13 @@ int main()
 						send_ret = send(i, response.c_str(), response.length(), 0);
 					}
 
-					/*************************************************/
-					/* If the close_conn flag was turned on, we need */
-					/* to clean up this active connection.  This     */
-					/* clean up process includes removing the        */
-					/* descriptor from the master set and            */
-					/* determining the new maximum descriptor value  */
-					/* based on the bits that are still turned on in */
-					/* the master set.                               */
-					/*************************************************/
+					/* If the close_conn flag was turned on, we need
+						to clean up this active connection.  This    
+						clean up process includes removing the       
+						descriptor from the master set and           
+						determining the new maximum descriptor value 
+						based on the bits that are still turned on in
+						the master set.                               */
 					if (close_conn)
 					{
 						close(i);
@@ -322,9 +196,7 @@ int main()
 
 	} while (end_server == FALSE);
 
-	/*************************************************************/
 	/* Clean up all of the sockets that are open                 */
-	/*************************************************************/
 	for (i = 0; i <= max_sd; ++i)
 	{
 		if (FD_ISSET(i, &master_set))
