@@ -1,4 +1,4 @@
-#include "socket.hpp"
+#include "Socket.hpp"
 #include <vector>
 #include "request.hpp"
 #include "response.hpp"
@@ -25,8 +25,8 @@ int main()
 	char buffer[BUFFER_SIZE];
 	char buffer_null_terminated[BUFFER_SIZE + 1];
 	struct fd_set master_set, working_set;
-	Socket socket1(AF_INET, 8080, SOCK_STREAM, 0, INADDR_ANY);
-	Socket socket2(AF_INET, 9090, SOCK_STREAM, 0, INADDR_ANY);
+	Socket socket1(AF_INET, 8080, SOCK_STREAM, 0);
+	Socket socket2(AF_INET, 9090, SOCK_STREAM, 0);
 
 	listen_sd1 = socket1.get_sock_id();
 	listen_sd2 = socket2.get_sock_id();
@@ -157,9 +157,9 @@ int main()
 
 					} while (TRUE);
 					req.parse_buffer(str_buff);
-					// std::cout << "***************** HTTP REQUEST START****************" << std::endl;
-					// std::cout << req << std::endl;
-					// std::cout << "***************** HTTP REQUEST END ****************\n";
+					std::cout << "***************** HTTP REQUEST START****************" << std::endl;
+					std::cout << req << std::endl;
+					std::cout << "***************** HTTP REQUEST END ****************\n";
 
 					res.load_http_request(req);
 					// std::cout << "***************** HTTP REPONSE START****************" << std::endl;
