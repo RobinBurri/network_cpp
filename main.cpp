@@ -1,4 +1,4 @@
-#include "Socket.hpp"
+#include "socket.hpp"
 #include <vector>
 #include "request.hpp"
 #include "response.hpp"
@@ -24,7 +24,7 @@ int main()
 	int close_conn;
 	char buffer[BUFFER_SIZE];
 	char buffer_null_terminated[BUFFER_SIZE + 1];
-	struct fd_set master_set, working_set;
+	fd_set master_set, working_set;
 	
 	std::vector<int> sockets;
 

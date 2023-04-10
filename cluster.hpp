@@ -1,13 +1,20 @@
 #ifndef CLUSTER_HPP
 #define CLUSTER_HPP
 
-#include "Socket.hpp"
+#include "socket.hpp"
 #include <iostream>
-#include <string>
+#include <cstring>
 #include <vector>
+#include <map>
 
 class Cluster
 {
+	typedef struct host_port
+	{
+		double port;
+		std::string host;
+		std::string path;
+	} t_host_port;
 	Cluster(void);
 	Cluster(const Cluster &src);
 	~Cluster(void);
@@ -15,18 +22,13 @@ class Cluster
 
 	void load_config();
 	void setup();
-	// void run();
-	private:
-
-		typedef struct host_port
-		{
-			double port;
-			std::string host;
-			std::string path;
-		} t_host_port;
-
-		std::vector<t_host_port> _servers;
-		std::vector<Socket> _socket_ids;
+	void run();
+	void close_all_sockets();
+	std::vector<t_host_port> _server_vector;
+	std::map<int, Socket *> _sockets;
+	std::vector<int> _sockets_fds;
+	fd_set _fd_set;
+	int _max_fd;
 };
 
 #endif
