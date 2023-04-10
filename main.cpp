@@ -25,11 +25,16 @@ int main()
 	char buffer[BUFFER_SIZE];
 	char buffer_null_terminated[BUFFER_SIZE + 1];
 	struct fd_set master_set, working_set;
-	Socket socket1(AF_INET, 8080, SOCK_STREAM, 0);
-	Socket socket2(AF_INET, 9090, SOCK_STREAM, 0);
+	
+	std::vector<int> sockets;
 
-	listen_sd1 = socket1.get_sock_id();
-	listen_sd2 = socket2.get_sock_id();
+	for (int i= 0; i < 5; i++)
+	{
+		Socket socket(AF_INET, 8080 + 1, SOCK_STREAM, 0);
+		sockets.push_back(socket.get_sock_id());
+	}
+
+
 	FD_ZERO(&master_set);
 	/* FD_ZERO() clears out the master_set called socks, so that
 		it doesn't contain any file descriptors. */

@@ -79,6 +79,7 @@ void *handle_connection(int client_socket)
 
 	FILE *fp = fopen(actualpath, "r");
 	if (fp == NULL) {
+
 		printf("ERROR(open): %s\n", buffer);
 		close(client_socket);
 		return NULL;
