@@ -1,5 +1,8 @@
 #ifndef SOCKET_HPP
 #define SOCKET_HPP
+
+#include "./request.hpp"
+#include "./response.hpp"
 #include <sys/socket.h>
 #include <netinet/in.h>
 #include <iostream>
@@ -7,7 +10,9 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <fcntl.h>
+#include <cstring>
 #include <unistd.h>
+
 #include <map>
 
 #define LISTEN_BACKLOG 10
@@ -20,6 +25,9 @@ class Socket
 	int				   _connection;
 	std::map<int, std::string>	_requests;
 	struct sockaddr_in _address;
+	http::Request			  _request_parser;
+	http::Response _response_handler;
+
 
   public:
   	int				   socket_accept(void);

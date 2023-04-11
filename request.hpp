@@ -26,6 +26,7 @@ class Request
 	std::string		get_protocol() const;
 	std::string		get_host() const;
 	const t_object &get_map() const;
+	
 
   private:
 	t_object	_request_map;
